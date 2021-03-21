@@ -22,173 +22,146 @@ const notEmpty = str => str.match(/^\s*$/gi) === null;
 
 // view all events
 app.get('/events', async (req, res) => {
-    try {
-        const allEvents = await db.query('SELECT * FROM events');
-        res.json(allEvents.rows);
-    } catch (error) {
-        console.log(error.message);
+    db.query('SELECT * FROM events')
+        .then(allEvents => res.json(allEvents.rows))
+        .catch(e => console.error(e.stack));
     }
-})
+)
 
 // add an event
 app.post('/events', async (req, res) => {
-    try {
-        // for now just these three
-        const { title, date, category } = req.body;
+    const { title, date, category } = req.body;
 
-        if (notEmpty(title) && notEmpty(date) && notEmpty(category)) {
-            const event = await db.query(
-                'INSERT INTO events (title, date, category)'
-                + ' VALUES ($1, $2, $3) RETURNING *',
-                [title, date, category]
-            );
-            res.json(event.rows[0]);
-        }
+    if (notEmpty(title) && notEmpty(date) && notEmpty(category)) {
 
-        res.status(404).send('Invalid event input');
-    } catch (error) {
-        console.log(error.message);
+        db.query(
+            'INSERT INTO events (title, date, category)'
+            + ' VALUES ($1, $2, $3) RETURNING *',
+            [title, date, category]
+        )
+            .then(event => res.json(event.rows[0]))
+            .catch(e => console.error(e.stack));
     }
+
+    res.status(404).send('Invalid event input');
+
 })
 
 // get an event
 app.get('/events/:id', async (req, res) => {
-    try {
-        const { id } = req.params;
+    const { id } = req.params;
 
-        const event = await db.query(
-            'SELECT * FROM events WHERE event_id = $1', [id]);
-        
-        res.json(event.rows[0]);
-    } catch (error) {
-        console.log(error.message);
-    }
+    db.query(
+        'SELECT * FROM events WHERE event_id = $1',
+        [id]
+    )
+        .then(event => res.json(event.rows[0]))
+        .catch(e => console.error(e.stack));
 })
 
 // edit an event
 app.put('/events/:id', async (req, res) => {
-    try {
-        const { id } = req.params;
-        const { title, date, category } = req.body;
+    const { id } = req.params;
+    const { title, date, category } = req.body;
 
-        const updatedEvent = await db.query(
-            'UPDATE events' +
-            ' SET title = $2, date = $3, category = $4'
-            +' WHERE event_id = $1',
-            [id, title, date, category]
-        );
-
-        res.json(updatedEvent.rows[0]);
-    } catch (error) {
-        console.log(error.message);
-    }
+    db.query(
+        'UPDATE events' +
+        ' SET title = $2, date = $3, category = $4'
+        + ' WHERE event_id = $1',
+        [id, title, date, category]
+    )
+        .then(updatedEvent => res.json(updatedEvent.rows[0]))
+        .catch(e => console.error(e.stack));
 })
+
 // delete an event
 app.delete('/events/:id', async (req, res) => {
-    try {
-        const { id } = req.params;
+    const { id } = req.params;
 
-        const deletedEvent = await db.query(
-            'DELETE FROM events WHERE event_id = $1',
-            [id]
-        );
+    db.query(
+        'DELETE FROM events WHERE event_id = $1',
+        [id]
+    ).catch(e => console.error(e.stack));
 
-        const removeFavorites = await db.query(
-            'DELETE FROM favorites WHERE event_id = $1',
-            [id]
-        );
+    db.query(
+        'DELETE FROM favorites WHERE event_id = $1',
+        [id]
+    ).catch(e => console.error(e.stack));
 
-        res.send('Event deleted');
-    } catch (error) {
-        console.log(error.message);
-    }
+    res.status(204);
 })
 
 // USER ROUTES
 
 // view all users 
 app.get('/users', async (req, res) => {
-    try {
-        const allUsers = await db.query('SELECT * FROM users');
-        res.json(allUsers.rows);
-    } catch (error) {
-        console.log(error.message);
-    }
+    db.query('SELECT * FROM users')
+        .then(allUsers => res.json(allUsers))
+        .catch(e => console.error(e.stack));
 })
 
 // add a user
 app.post('/users', async (req, res) => {
-    try {
-        const { name, email } = req.body;
+    const { name, email } = req.body;
 
-        // name shouldn't ever be blank
-        if (notEmpty(name)) {
-            const user = await db.query(
-                'INSERT INTO users (name, email) VALUES ($1, $2) RETURNING *',
-                [name, email]
-            );
+    if (notEmpty(name)) {
 
-            res.json(user.rows[0]);
-        }
-
-        res.status(404).send('Check input');
-    } catch (error) {
-        console.log(error.message);
+        db.query(
+            'INSERT INTO users (name, email) VALUES ($1, $2) RETURNING *',
+            [name, email]
+        )
+            .then(user => res.status(201).json(user.rows[0]))
+            .catch(e => console.error(e.stack));
     }
+    res.status(404).send('Check input');
 })
 
 // get a user
 app.get('/users/:id', async (req, res) => {
-    try {
-        const { id } = req.params;
-        const user = await db.query('SELECT * FROM users WHERE uid = $1', [id]);
+    const { id } = req.params;
 
-        res.json(user.rows[0]);
-    } catch (error) {
-        console.log(error.message);
-    }
+    db.query(
+        'SELECT * FROM users WHERE uid = $1',
+        [id]
+    )
+        .then(user => res.json(user.rows[0]))
+        .catch(e => console.error(e.stack));
 })
 
 // edit a user
 // just name for now, can add in email update later
 app.put('/users/:id', async (req, res) => {
-    try {
-        const { id } = req.params;
-        const { name } = req.body;
+    const { id } = req.params;
+    const { name } = req.body;
 
-        if (notEmpty(name)) {
-            const updateUser = await db.query(
+    if (notEmpty(name)) {
+
+        db.query(
             'UPDATE users SET name = $1 WHERE uid = $2',
             [name, id]
-            );
-            res.json(updateUser);
-        }
-        res.status(404).send('Invalid input, name cannot be blank');
-
-    } catch (error) {
-        console.log(error.message);
+        )
+            .then(res.send(201))
+            .catch(e => console.error(e.stack));
     }
+
+    res.status(404).send('Invalid input, name cannot be blank');
 })
 
 // delete a user
 app.delete('/users/:id', async (req, res) => {
-    try {
-        const { id } = req.params;
-        const deleteUser = await db.query(
-            'DELETE FROM users WHERE uid = $1',
-            [id]
-        );
+    const { id } = req.params;
 
-        const deleteFaves = await db.query(
-            'DELETE FROM favorites WHERE uid = $1',
-            [id]
-        );
+    db.query(
+        'DELETE FROM users WHERE uid = $1',
+        [id]
+    ).catch(e => console.error(e.stack));
 
-        res.json(deleteUser);
+    db.query(
+        'DELETE FROM favorites WHERE uid = $1',
+        [id]
+    ).catch(e => console.error(e.stack));
 
-    } catch (error) {
-        console.log(error.message);
-    }
+    res.status(204);
 })
 
 
@@ -196,44 +169,36 @@ app.delete('/users/:id', async (req, res) => {
 
 // user specific
 app.get('/users/:id/favorites', async (req, res) => {
-    try {
-        const { id } = req.params;
+    const { id } = req.params;
 
-        const getFaves = await db.query(
-            'SELECT e.title FROM favorites AS f'
-            + ' INNER JOIN events AS e'
-            + ' ON e.event_id = f.event_id'
-            + ' WHERE f.uid = $1', [id]
-        );
-        
-        const eventsArr = getFaves.rows.reduce((acc, e) => acc.concat(e.title), []);
-
-        res.json(eventsArr);
-
-    } catch (error) {
-        console.log(error.message);
-    }
+    db.query(
+        'SELECT e.title FROM favorites AS f'
+        + ' INNER JOIN events AS e'
+        + ' ON e.event_id = f.event_id'
+        + ' WHERE f.uid = $1',
+        [id]
+    )
+        .then(result => result.rows)
+        .then(eventRows => eventRows.reduce((acc, e) => acc.concat(e.title), []))
+        .then(faveEvents => res.json(faveEvents))
+        .catch(e => console.error(e.stack));
 })
 
 // Who favorite'd an event 
-app.get('/events/:id/favorite', async (req, res) => {
-    try {
-        const { id } = req.params;
 
-        getFaves = await db.query(
-            'SELECT u.name FROM favorites AS f'
-            + ' INNER JOIN users AS u ON u.uid = f.uid'
-            + ' WHERE f.event_id = $1',
-            [id]
-        )
+app.get('/events/:id/favorite', (req, res) => {
+    const { id } = req.params;
 
-        const names = getFaves.rows.reduce((acc, u) => acc.concat(u.name), []);
-        
-        res.json(names);
-
-    } catch (error) {
-        console.log(error.message);
-    }
+    db.query(
+        'SELECT u.name FROM favorites AS f'
+        + ' INNER JOIN users AS u ON u.uid = f.uid'
+        + ' WHERE f.event_id = $1',
+        [id]
+    )
+        .then(result => result.rows)
+        .then(nameRows => nameRows.reduce((acc, u) => acc.concat(u.name), []))
+        .then(faveNames => res.json(faveNames))
+        .catch(e => console.error(e.stack));
 })
 
 
@@ -243,19 +208,15 @@ app.get('/events/:id/favorite', async (req, res) => {
 
 
 // By category
-app.get('/search', async (req, res) => {
-    try {
-        const { category } = req.body;
+app.get('/search/category', async (req, res) => {
 
-        const getEvents = await db.query(
-            'SELECT * FROM events WHERE category = $1',
-            [category]
-        );
+    const { category } = req.body;
 
-        res.json(getEvents.rows);
-
-    } catch (error) {
-        console.log(error.message);
-    }
+    db.query(
+        'SELECT * FROM events WHERE category = $1',
+        [category]
+    )
+        .then(getEvents => res.json(getEvents.rows))
+        .catch(e => console.error(e.stack));
 })
 
