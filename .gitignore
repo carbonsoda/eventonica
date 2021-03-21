@@ -1,0 +1,8 @@
+client/node_modules
+server/node_modules
+server/routes
+
+config.js
+server/.env
+*.DS_Store
+*/package-lock.json
