@@ -12,6 +12,8 @@ app.listen(PORT, () => {
     console.log(`Server started on port ${PORT}`)
 });
 
+// for validation 
+const notEmpty = str => str.match(/^\s*$/gi) === null;
 
 // ROUTES
 
