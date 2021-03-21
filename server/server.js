@@ -96,7 +96,7 @@ app.delete('/events/:id', async (req, res) => {
 // view all users 
 app.get('/users', async (req, res) => {
     db.query('SELECT * FROM users')
-        .then(allUsers => res.json(allUsers))
+        .then(allUsers => res.json(allUsers.rows))
         .catch(e => console.error(e.stack));
 })
 
