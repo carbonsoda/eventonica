@@ -186,3 +186,25 @@ app.delete('/users/:id', async (req, res) => {
     }
 })
 
+
+// Get favorites 
+app.get('/users/:id/favorites', async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const getFaves = await db.query(
+            'SELECT e.title FROM favorites AS f'
+            + ' INNER JOIN events AS e'
+            + ' ON e.event_id = f.event_id'
+            + ' WHERE f.uid = $1', [id]
+        );
+        
+        const eventsArr = getFaves.rows.reduce((acc, e) => acc.concat(e.title), []);
+
+        res.json(eventsArr);
+
+    } catch (error) {
+        console.log(error.message);
+    }
+})
+
