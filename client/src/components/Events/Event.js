@@ -1,9 +1,9 @@
 // individual events
 import React from 'react';
 
-export default function Event(event) {
+export default function Event({event}) {
 
-  let { title, date, category } = event.event;
+  let { title, date, category } = event;
   date = new Date(date).toLocaleDateString(undefined,
     { weekday: 'short', month: 'short', day: 'numeric'}
   );

@@ -93,7 +93,7 @@ app.delete('/events/:id', async (req, res) => {
             [id]
         );
 
-        res.json('Event deleted');
+        res.send('Event deleted');
     } catch (error) {
         console.log(error.message);
     }

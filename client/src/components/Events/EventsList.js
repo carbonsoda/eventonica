@@ -38,7 +38,9 @@ export default function EventsList() {
     return (
         <>
             <h2>All events</h2>
-            <table>
+            <table
+                class="table table-hover"
+            >
                 <thead>
                     <tr>
                         <th>Date</th>

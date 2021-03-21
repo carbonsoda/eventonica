@@ -6,7 +6,6 @@ function App() {
   return (
     <>
       <main>
-        
         <EventsMain />
         <UsersMain />
       </main>
