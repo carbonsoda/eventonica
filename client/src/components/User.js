@@ -2,9 +2,21 @@
 
 import React from 'react'
 
-export default function User(props) {
+export default function User({ user }) {
     const [faves, setFaves] = React.useState();
-    let { uid, name } = props.user;
+    const [faveBtn, setFaveBtn] = React.useState("bi bi-heart");
+
+    let { uid, name } = user;
+
+    const toggleFaveBtn = () => {
+        if (faveBtn.endsWith('fill')) {
+            setFaveBtn('bi bi-heart');
+            setFaves('');
+        } else {
+            setFaveBtn('bi bi-heart-fill');
+            getFaves();
+        }
+    }
 
     const getFaves = async () => {
         try {
@@ -13,22 +25,21 @@ export default function User(props) {
 
 
             setFaves(allFaves.join(', '));
-
         } catch (error) {
             console.error(error);
         }
     };
 
     return (
-        <div>
+        <>
             { name }
             <button
-                onClick={getFaves}
+                onClick={toggleFaveBtn}
             >
-                Favorites
+                <i class={faveBtn}></i>
             </button>
             { faves }
-        </div>
+        </>
     )
 }
 
