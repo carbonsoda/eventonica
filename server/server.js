@@ -7,6 +7,7 @@ const { PORT } = require('./config');
 
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.listen(PORT, () => {
     console.log(`Server started on port ${PORT}`)
@@ -20,12 +21,80 @@ const notEmpty = str => str.match(/^\s*$/gi) === null;
 // EVENT ROUTES
 
 // view all events
+app.get('/events', async (req, res) => {
+    try {
+        const allEvents = await db.query('SELECT * FROM events');
+        res.json(allEvents.rows);
+    } catch (error) {
+        console.log(error.message);
+    }
+})
+
+// add an event
+app.post('/events', async (req, res) => {
+    try {
+        // for now just these three
+        const { title, date, category } = req.body;
+
+        if (notEmpty(title) && notEmpty(date) && notEmpty(category)) {
+            const event = await db.query(
+                'INSERT INTO events (title, date, category) VALUES ($1, $2, $3) RETURNING *',
+                [title, date, category]
+            );
+            res.json(event.rows[0]);
+        }
+
+        res.status(404).send('Invalid event input');
+    } catch (error) {
+        console.log(error.message);
+    }
+})
 
 // get an event
+app.get('/events/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const event = await db.query(
+            'SELECT * FROM events WHERE event_id = $1', [id]);
+        
+        res.json(event.rows[0]);
+    } catch (error) {
+        console.log(error.message);
+    }
+})
 
 // edit an event
+app.put('/events/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { title, date, category } = req.body;
 
+        const updatedEvent = await db.query(
+            'UPDATE events SET title = $2, date = $3, category = $4 WHERE event_id = $1',
+            [id, title, date, category]
+        );
+
+        res.json(updatedEvent.rows[0]);
+    } catch (error) {
+        console.log(error.message);
+    }
+})
 // delete an event
+app.delete('/events/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const deletedEvent = await db.query(
+            'DELETE FROM events WHERE event_id = $1',
+            [id]
+        );
+
+        res.json('Event deleted');
+    } catch (error) {
+        console.log(error.message);
+    }
+})
 
 // USER ROUTES
 
