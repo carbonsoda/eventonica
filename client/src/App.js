@@ -5,8 +5,10 @@ import UsersMain from './components/UsersMain';
 function App() {
   return (
     <>
-      <EventsMain />
-      <UsersMain />
+      <main>
+        <EventsMain />
+        <UsersMain />
+      </main>
     </>
   );
 }
