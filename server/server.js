@@ -28,11 +28,87 @@ app.listen(PORT, () => {
 // USER ROUTES
 
 // view all users 
+app.get('/users', async (req, res) => {
+    try {
+        const allUsers = await db.query('SELECT * FROM users');
+        res.json(allUsers.rows);
+    } catch (error) {
+        console.log(error.message);
+    }
+})
+
+// add a user
+app.post('/users', async (req, res) => {
+    try {
+        const { name, email } = req.body;
+        // name shouldn't ever be blank
+        const nameNotBlank = name.match(/^\s*$/gi) == null;
+
+        if (name && nameNotBlank) {
+            const user = await db.query(
+                'INSERT INTO users (name, email) VALUES ($1, $2) RETURNING *',
+                [name, email]
+            );
+
+            res.json(user.rows[0]);
+        }
+
+        res.status(404).send('Check input');
+    } catch (error) {
+        console.log(error.message);
+    }
+})
 
 // get a user
+app.get('/users/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const user = await db.query('SELECT * FROM users WHERE uid = $1', [id]);
+
+        res.json(user.rows[0]);
+    } catch (error) {
+        console.log(error.message);
+    }
+})
 
 // edit a user
+// just name for now, can add in email update later
+app.put('/users/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { name } = req.body;
+
+        // todo: add input validation
+
+        const updateUser = await db.query(
+            'UPDATE users SET name = $1 WHERE uid = $2',
+            [name, id]
+        );
+
+        res.json(updateUser);
+    } catch (error) {
+        console.log(error.message);
+    }
+})
 
 // delete a user
+app.delete('/users/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const deleteUser = await db.query(
+            'DELETE FROM users WHERE uid = $1',
+            [id]
+        );
+        // const deleteFaves = await db.query(
+        //     'DELETE FROM events WHERE uid = $1',
+        //     [id]
+        // );
 
+        // console.log(deleteFaves);
+        res.json(deleteUser);
+
+    } catch (error) {
+        console.log(error.message);
+    }
+})
 
