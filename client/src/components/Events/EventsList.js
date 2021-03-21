@@ -32,13 +32,35 @@ export default function EventsList() {
     return (
         <>
             <h2>All events</h2>
-            <div>
-                {
-                    events.map((event) => (
-                        <Event event={ event } />
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Title</th>
+                        <th>Type</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    { events.map(event => (
+                        <tr key={ event.event_id }>
+                            <Event event={ event } />
+                            <td>
+                                <EditEvent event={ event } />
+                            </td>
+                            <td>
+                                <button className="btn">
+                                    Delete
+                                    </button>
+                            </td>
+                        </tr>
                     ))
-                }
-            </div>
+                        
+                    }
+                </tbody>
+                
+            </table>
         </>
     )
 }

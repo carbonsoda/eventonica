@@ -4,11 +4,15 @@ import React from 'react';
 export default function Event(event) {
 
   let { title, date, category } = event.event;
-  date = new Date(date).toDateString();
+  date = new Date(date).toLocaleDateString(undefined,
+    { weekday: 'short', month: 'short', day: 'numeric'}
+  );
 
   return (
-    <div>
-      { title } @ { date } - {category }
-    </div>
+    <>
+      <td>{ date }</td>
+      <td>{ title }</td>
+      <td>{ category }</td>
+    </>
   );
 }
