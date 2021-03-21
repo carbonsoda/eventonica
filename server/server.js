@@ -38,7 +38,8 @@ app.post('/events', async (req, res) => {
 
         if (notEmpty(title) && notEmpty(date) && notEmpty(category)) {
             const event = await db.query(
-                'INSERT INTO events (title, date, category) VALUES ($1, $2, $3) RETURNING *',
+                'INSERT INTO events (title, date, category)'
+                + ' VALUES ($1, $2, $3) RETURNING *',
                 [title, date, category]
             );
             res.json(event.rows[0]);
@@ -71,7 +72,9 @@ app.put('/events/:id', async (req, res) => {
         const { title, date, category } = req.body;
 
         const updatedEvent = await db.query(
-            'UPDATE events SET title = $2, date = $3, category = $4 WHERE event_id = $1',
+            'UPDATE events' +
+            ' SET title = $2, date = $3, category = $4'
+            +' WHERE event_id = $1',
             [id, title, date, category]
         );
 
