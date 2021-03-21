@@ -1,10 +1,11 @@
 client/node_modules
 server/node_modules
 server/routes
-server/db.js
 
 config.js
 server/.env
 *.DS_Store
 */package-lock.json
 .gitignore
+client/src/components/Events/SelectCategory.js
+server/db.js
