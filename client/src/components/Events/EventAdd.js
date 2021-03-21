@@ -15,27 +15,22 @@ export default function EventAdd() {
 
     const onSubmitForm = async e => {
         e.preventDefault();
-        try {
-            const body = { title, date, category };
-            console.log(body);
 
-            const res = await fetch(
-                'http://localhost:5000/events',
-                {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(body)
-                });
-            
-            const output = await res.json();
+        const body = { title, date, category };
 
-            console.log(output);
-            window.location = '/';
-        } catch (error) {
-            console.error(error);
-        }
+        fetch('http://localhost:5000/events',
+            {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            })
+            .then(res => res.json())
+            .catch(e => console.error(e.stack));
+        
+        // todo: lift state
+        window.location = '/';
     }
-    
+
     return (
         <>
             <h2>Event Add</h2>
@@ -47,7 +42,7 @@ export default function EventAdd() {
                 />
                 <input
                     type="date"
-                    onChange={ e => setDate(e.target.value)}
+                    onChange={ e => setDate(e.target.value) }
                 />
                 <select
                     value={ category }
@@ -58,7 +53,7 @@ export default function EventAdd() {
                         <option value={ category } key={ category }>
                             {category }
                         </option>
-                    ))}
+                    )) }
                 </select>
 
                 <button type="submit" value="Add" />

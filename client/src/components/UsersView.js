@@ -7,14 +7,10 @@ export default function UsersView() {
     const [faveCount, setFaveCount] = React.useState(0);
 
     const getUsers = async () => {
-        try {
-            const res = await fetch('http://localhost:5000/users');
-            const allUsers = await res.json();
-            console.log(allUsers);
-            setUsers(allUsers);
-        } catch (error) {
-            console.error(error);
-        }
+        fetch('http://localhost:5000/users')
+            .then(res => res.json())
+            .then(allUsers => setUsers(allUsers))
+            .catch(e => console.error(e.stack));
     }
 
     React.useEffect(() => {
@@ -25,9 +21,11 @@ export default function UsersView() {
         <div>
             {
                 users.map((user) => (
-                    <User user={user} />
+                    <div key={ user.uid }>
+                        <User user={ user } />
+                    </div>
                 ))
-            }          
+            }
         </div>
     )
 }

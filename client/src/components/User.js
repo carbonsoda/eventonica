@@ -19,15 +19,9 @@ export default function User({ user }) {
     }
 
     const getFaves = async () => {
-        try {
-            const res = await fetch(`http://localhost:5000/users/${uid}/favorites`);
-            const allFaves = await res.json();
-
-
-            setFaves(allFaves.join(', '));
-        } catch (error) {
-            console.error(error);
-        }
+        fetch(`http://localhost:5000/users/${uid}/favorites`)
+            .then(res => res.json())
+            .then(allFaves => setFaves(allFaves.join(', ')));
     };
 
     return (

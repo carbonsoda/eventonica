@@ -8,27 +8,19 @@ export default function EventsList() {
     const [events, setEvents] = React.useState([]);
 
     const deleteEvent = async (id) => {
-        try {
-            console.log(id);
-            const deletedEvent = await fetch(`http://localhost:5000/events/${id}`, {
-                method: 'DELETE'
-            });
-            
-            setEvents(events.filter(event => event.event_id !== id));
-        } catch (error) {
-            console.error(error);
-        }
-    }
+        fetch(`http://localhost:5000/events/${id}`, {
+            method: 'DELETE'
+        })
+            .then(res => res.json())
+            .then(setEvents(events.filter(event => event.event_id !== id)))
+            .catch(e => console.error(e.stack));
+    };
 
     const getEvents = async () => {
-        try {
-            const res = await fetch('http://localhost:5000/events');
-            const allEvents = await res.json();
-
-            setEvents(allEvents);
-        } catch (error) {
-            console.error(error);
-        }
+        fetch('http://localhost:5000/events')
+            .then(res => res.json())
+            .then(allEvents => setEvents(allEvents))
+            .catch(e => console.error(e.stack));
     }
 
     React.useEffect(() => {
