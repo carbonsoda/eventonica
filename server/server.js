@@ -12,7 +12,7 @@ app.listen(PORT, () => {
     console.log(`Server started on port ${PORT}`)
 });
 
-// for validation 
+// for validation
 const notEmpty = str => str.match(/^\s*$/gi) === null;
 
 // ROUTES
@@ -43,10 +43,9 @@ app.get('/users', async (req, res) => {
 app.post('/users', async (req, res) => {
     try {
         const { name, email } = req.body;
-        // name shouldn't ever be blank
-        const nameNotBlank = name.match(/^\s*$/gi) == null;
 
-        if (name && nameNotBlank) {
+        // name shouldn't ever be blank
+        if (notEmpty(name)) {
             const user = await db.query(
                 'INSERT INTO users (name, email) VALUES ($1, $2) RETURNING *',
                 [name, email]
@@ -80,14 +79,15 @@ app.put('/users/:id', async (req, res) => {
         const { id } = req.params;
         const { name } = req.body;
 
-        // todo: add input validation
-
-        const updateUser = await db.query(
+        if (notEmpty(name)) {
+            const updateUser = await db.query(
             'UPDATE users SET name = $1 WHERE uid = $2',
             [name, id]
-        );
+            );
+            res.json(updateUser);
+        }
+        res.status(404).send('Invalid input, name cannot be blank');
 
-        res.json(updateUser);
     } catch (error) {
         console.log(error.message);
     }
