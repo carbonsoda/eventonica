@@ -93,6 +93,11 @@ app.delete('/events/:id', async (req, res) => {
             [id]
         );
 
+        const removeFavorites = await db.query(
+            'DELETE FROM favorites WHERE event_id = $1',
+            [id]
+        );
+
         res.send('Event deleted');
     } catch (error) {
         console.log(error.message);
@@ -173,12 +178,12 @@ app.delete('/users/:id', async (req, res) => {
             'DELETE FROM users WHERE uid = $1',
             [id]
         );
-        // const deleteFaves = await db.query(
-        //     'DELETE FROM events WHERE uid = $1',
-        //     [id]
-        // );
 
-        // console.log(deleteFaves);
+        const deleteFaves = await db.query(
+            'DELETE FROM favorites WHERE uid = $1',
+            [id]
+        );
+        
         res.json(deleteUser);
 
     } catch (error) {
@@ -188,6 +193,8 @@ app.delete('/users/:id', async (req, res) => {
 
 
 // Get favorites 
+
+// user specific
 app.get('/users/:id/favorites', async (req, res) => {
     try {
         const { id } = req.params;
