@@ -192,7 +192,7 @@ app.delete('/users/:id', async (req, res) => {
 })
 
 
-// Get favorites 
+// FAVORITES
 
 // user specific
 app.get('/users/:id/favorites', async (req, res) => {
@@ -230,6 +230,29 @@ app.get('/events/:id/favorite', async (req, res) => {
         const names = getFaves.rows.reduce((acc, u) => acc.concat(u.name), []);
         
         res.json(names);
+
+    } catch (error) {
+        console.log(error.message);
+    }
+})
+
+
+// SEARCH
+
+// By date
+
+
+// By category
+app.get('/search', async (req, res) => {
+    try {
+        const { category } = req.body;
+
+        const getEvents = await db.query(
+            'SELECT * FROM events WHERE category = $1',
+            [category]
+        );
+
+        res.json(getEvents.rows);
 
     } catch (error) {
         console.log(error.message);
