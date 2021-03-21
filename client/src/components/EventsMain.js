@@ -3,10 +3,10 @@
 // including searching, adding, deleting, etc
 
 import React from 'react';
-import EventsList from './EventsList';
-import EventsSearch from './EventsSearch';
+import EventsList from './Events/EventsList';
+import EventsSearch from './Events/EventsSearch';
 import EventViewBtn from './EventViewBtn';
-import EventAdd from './EventAdd';
+import EventAdd from './Events/EventAdd';
 
 export default function EventsMain() {
     
