@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Event from './Event';
+import EditEvent from './EditEvent';
 
 export default function EventsList() {
     const [events, setEvents] = React.useState([]);
