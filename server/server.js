@@ -25,7 +25,7 @@ app.get('/events', async (req, res) => {
     db.query('SELECT * FROM events')
         .then(allEvents => res.json(allEvents.rows))
         .catch(e => console.error(e.stack));
-    }
+}
 )
 
 // add an event
@@ -205,7 +205,27 @@ app.get('/events/:id/favorite', (req, res) => {
 // SEARCH
 
 // By date
+app.get('/search/date', (req, res) => {
+    const { start, end } = req.body;
 
+    let whereQuery = [];
+
+    if (notEmpty(start)) {
+        console.log(start);
+        whereQuery.push(`date >= \'${start}\'`);
+    }
+    if (notEmpty(end)) {
+        whereQuery.push(`date <= \'${end}\'`);
+    }
+
+    // allows proper escaping for '' in dates 
+    const fullQuery = "SELECT * FROM events WHERE " + whereQuery.join(' AND ');
+
+    db.query(fullQuery)
+        .then(getEvents => res.json(getEvents.rows))
+        .catch(e => console.error(e.stack));
+
+})
 
 // By category
 app.get('/search/category', async (req, res) => {
