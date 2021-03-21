@@ -7,9 +7,14 @@ import EditEvent from './EditEvent';
 export default function EventsList() {
     const [events, setEvents] = React.useState([]);
 
-    const deleteEvent = async () => {
+    const deleteEvent = async (id) => {
         try {
-            // const delete = await fetch('')
+            console.log(id);
+            const deletedEvent = await fetch(`http://localhost:5000/events/${id}`, {
+                method: 'DELETE'
+            });
+            
+            setEvents(events.filter(event => event.event_id !== id));
         } catch (error) {
             console.error(error);
         }
@@ -51,9 +56,12 @@ export default function EventsList() {
                                 <EditEvent event={ event } />
                             </td>
                             <td>
-                                <button className="btn">
+                                <button
+                                    className="btn"
+                                    onClick={ () => deleteEvent(event.event_id)}
+                                >
                                     Delete
-                                    </button>
+                                </button>
                             </td>
                         </tr>
                     ))
