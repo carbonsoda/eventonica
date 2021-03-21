@@ -183,7 +183,7 @@ app.delete('/users/:id', async (req, res) => {
             'DELETE FROM favorites WHERE uid = $1',
             [id]
         );
-        
+
         res.json(deleteUser);
 
     } catch (error) {
@@ -209,6 +209,27 @@ app.get('/users/:id/favorites', async (req, res) => {
         const eventsArr = getFaves.rows.reduce((acc, e) => acc.concat(e.title), []);
 
         res.json(eventsArr);
+
+    } catch (error) {
+        console.log(error.message);
+    }
+})
+
+// Who favorite'd an event 
+app.get('/events/:id/favorite', async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        getFaves = await db.query(
+            'SELECT u.name FROM favorites AS f'
+            + ' INNER JOIN users AS u ON u.uid = f.uid'
+            + ' WHERE f.event_id = $1',
+            [id]
+        )
+
+        const names = getFaves.rows.reduce((acc, u) => acc.concat(u.name), []);
+        
+        res.json(names);
 
     } catch (error) {
         console.log(error.message);
