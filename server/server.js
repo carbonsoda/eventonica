@@ -31,6 +31,7 @@ app.get('/events', async (req, res) => {
 // add an event
 app.post('/events', async (req, res) => {
     const { title, date, category } = req.body;
+    console.log(title, date, category);
 
     if (notEmpty(title) && notEmpty(date) && notEmpty(category)) {
 
@@ -41,9 +42,9 @@ app.post('/events', async (req, res) => {
         )
             .then(event => res.json(event.rows[0]))
             .catch(e => console.error(e.stack));
+    } else {
+        res.status(404).send('Invalid event input');
     }
-
-    res.status(404).send('Invalid event input');
 
 })
 
