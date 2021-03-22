@@ -26,37 +26,38 @@ export default function EventAdd() {
             })
             .then(res => res.json())
             .catch(e => console.error(e.stack));
-        
+
         // todo: lift state
         window.location = '/';
     }
 
     return (
         <>
-            <h2>Event Add</h2>
             <form onSubmit={ onSubmitForm }>
-                <input
-                    type="text"
-                    placeholder="Virtual corgi hugs"
-                    onChange={ e => setTitle(e.target.value) }
-                />
-                <input
-                    type="date"
-                    onChange={ e => setDate(e.target.value) }
-                />
-                <select
-                    value={ category }
-                    onChange={ e => setCategory(e.target.value) }
-                >
-                    <option value="">---Category----</option>
-                    { defaultCategories.map(category => (
-                        <option value={ category } key={ category }>
-                            {category }
-                        </option>
-                    )) }
-                </select>
+                    <input
+                        type="date"
+                        onChange={ e => setDate(e.target.value) }
+                    />
+                    <input
+                        type="text"
+                        placeholder="Virtual corgi hugs"
+                        onChange={ e => setTitle(e.target.value) }
+                    />
+                    <select
+                        value={ category }
+                        onChange={ e => setCategory(e.target.value) }
+                    >
+                        <option value="">---Category----</option>
+                        { defaultCategories.map(category => (
+                            <option value={ category } key={ category }>
+                                {category }
+                            </option>
+                        )) }
+                    </select>
+                    <button type="submit">
+                        Add
+                    </button>
 
-                <button type="submit" value="Add" />
             </form>
         </>
     )

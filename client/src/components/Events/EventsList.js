@@ -3,6 +3,7 @@
 import React from 'react';
 import Event from './Event';
 import EditEvent from './EditEvent';
+import AddEvent from './EventAdd';
 
 export default function EventsList() {
     const [events, setEvents] = React.useState([]);
@@ -31,7 +32,7 @@ export default function EventsList() {
         <>
             <h2>All events</h2>
             <table
-                class="table table-hover"
+                class="table table-hover mx-auto"
             >
                 <thead>
                     <tr>
@@ -42,7 +43,7 @@ export default function EventsList() {
                         <th>Delete</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="align-middle">
                     { events.map(event => (
                         <tr key={ event.event_id }>
                             <Event event={ event } />
@@ -51,18 +52,17 @@ export default function EventsList() {
                             </td>
                             <td>
                                 <button
-                                    className="btn"
-                                    onClick={ () => deleteEvent(event.event_id)}
+                                    onClick={ () => deleteEvent(event.event_id) }
                                 >
                                     Delete
                                 </button>
                             </td>
                         </tr>
                     ))
-                        
+
                     }
                 </tbody>
-                
+
             </table>
         </>
     )
