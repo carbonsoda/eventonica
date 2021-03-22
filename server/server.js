@@ -205,9 +205,9 @@ app.get('/events/:id/favorite', (req, res) => {
 
 // SEARCH
 
-// By date
-app.get('/search/date', (req, res) => {
-    const { start, end } = req.body;
+app.post('/search', async (req, res) => {
+
+    const { category, start, end } = req.body;
 
     let whereQuery = [];
 
@@ -218,25 +218,14 @@ app.get('/search/date', (req, res) => {
     if (notEmpty(end)) {
         whereQuery.push(`date <= \'${end}\'`);
     }
+    if (notEmpty(category)) {
+        whereQuery.push(`category = \'${category}\'`);
+    }
 
     // allows proper escaping for '' in dates 
     const fullQuery = "SELECT * FROM events WHERE " + whereQuery.join(' AND ');
 
     db.query(fullQuery)
-        .then(getEvents => res.json(getEvents.rows))
-        .catch(e => console.error(e.stack));
-
-})
-
-// By category
-app.get('/search/category', async (req, res) => {
-
-    const { category } = req.body;
-
-    db.query(
-        'SELECT * FROM events WHERE category = $1',
-        [category]
-    )
         .then(getEvents => res.json(getEvents.rows))
         .catch(e => console.error(e.stack));
 })
