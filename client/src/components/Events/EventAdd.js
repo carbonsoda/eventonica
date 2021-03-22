@@ -33,7 +33,7 @@ export default function EventAdd({addEvent}) {
                     />
                     <input
                         type="text"
-                        placeholder="Virtual corgi hugs"
+                    placeholder="Virtual corgi hugs"
                         onChange={ e => setTitle(e.target.value) }
                     />
                     <select

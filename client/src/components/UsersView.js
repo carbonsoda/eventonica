@@ -5,6 +5,7 @@ import User from './User';
 export default function UsersView() {
     const [users, setUsers] = React.useState([]);
     const [faveCount, setFaveCount] = React.useState(0);
+    const [newUser, setNewUser] = React.useState('');
 
     const getUsers = async () => {
         fetch('http://localhost:5000/users')
@@ -13,20 +14,49 @@ export default function UsersView() {
             .catch(e => console.error(e.stack));
     }
 
+    const addUser = async () => {
+
+        const inputBody = {'name': newUser, 'email': ''};
+
+        fetch('http://localhost:5000/users',
+            {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(inputBody)
+            }
+        )
+            .then(res => res.json())
+            .then(() => getUsers())
+            .catch(e => console.error(e.stack));
+    }
+
     React.useEffect(() => {
         getUsers();
     }, []);
 
     return (
-        <div>
-            {
-                users.map((user) => (
-                    <div key={ user.uid }>
-                        <User user={ user } />
-                    </div>
-                ))
-            }
-        </div>
+        <>
+            <div>
+                {
+                    users.map((user) => (
+                        <div key={ user.uid }>
+                            <User user={ user } />
+                        </div>
+                    ))
+                }
+            </div>
+            <div>
+                <input
+                    type="text"
+                    onChange={e => setNewUser(e.target.value)}
+                />
+                <button
+                    onClick={addUser}
+                >
+                    Add User
+                </button>
+            </div>
+        </>
     )
 }
 

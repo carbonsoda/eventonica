@@ -111,7 +111,7 @@ app.post('/users', async (req, res) => {
             'INSERT INTO users (name, email) VALUES ($1, $2) RETURNING *',
             [name, email]
         )
-            .then(user => res.status(201).json(user.rows[0]))
+            .then(user => res.status(201).json(user.rows))
             .catch(e => console.error(e.stack));
     }
     res.status(404).send('Check input');
