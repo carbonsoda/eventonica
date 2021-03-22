@@ -5,7 +5,7 @@
 import React from 'react'
 
 
-export default function EventAdd() {
+export default function EventAdd({addEvent}) {
 
     const [title, setTitle] = React.useState('');
     const [date, setDate] = React.useState('');
@@ -17,18 +17,11 @@ export default function EventAdd() {
         e.preventDefault();
 
         const body = { title, date, category };
+        addEvent(body);
 
-        fetch('http://localhost:5000/events',
-            {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(body)
-            })
-            .then(res => res.json())
-            .catch(e => console.error(e.stack));
-
-        // todo: lift state
-        window.location = '/';
+        setTitle('');
+        setDate('');
+        setCategory('');
     }
 
     return (

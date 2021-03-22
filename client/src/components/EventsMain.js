@@ -21,9 +21,6 @@ export default function EventsMain() {
                 <EventsList />
                 <EventsSearch />
             </div>
-            <div>
-                <EventAdd />
-            </div>
 
         </>
     );

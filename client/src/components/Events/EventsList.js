@@ -17,12 +17,27 @@ export default function EventsList() {
             .catch(e => console.error(e.stack));
     };
 
+    const addEvent = async (inputBody) => {
+        console.log(inputBody);
+        fetch('http://localhost:5000/events',
+            {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(inputBody)
+            })
+            .then(res => res.json())
+            .then(() => getEvents())
+            .catch(e => console.error(e.stack));
+        
+    }
+
     const getEvents = async () => {
         fetch('http://localhost:5000/events')
             .then(res => res.json())
             .then(allEvents => setEvents(allEvents))
             .catch(e => console.error(e.stack));
     }
+
 
     React.useEffect(() => {
         getEvents();
@@ -64,6 +79,8 @@ export default function EventsList() {
                 </tbody>
 
             </table>
+
+            <AddEvent addEvent={ addEvent }/>
         </>
     )
 }
