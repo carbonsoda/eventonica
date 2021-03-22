@@ -45,7 +45,6 @@ export default function EventsList() {
 
     return (
         <>
-            <h2>All events</h2>
             <table
                 class="table table-hover mx-auto"
             >
