@@ -30,6 +30,18 @@ export default function UsersView() {
             .catch(e => console.error(e.stack));
     }
 
+    // TODO: implement as a button
+    const deleteUser = async (id) => {
+        fetch(`http://localhost:5000/users/${id}`,
+            { method: 'DELETE' }
+        )
+            .then(() => setUsers(
+                users.filter(user => user.uid !== id)
+            ))
+            .then(() => getUsers())
+            .catch(e => console.error(e.stack));
+    }
+
     React.useEffect(() => {
         getUsers();
     }, []);
