@@ -9,9 +9,9 @@ export default function UsersView() {
 
   const getUsers = async () => {
     fetch("http://localhost:5000/users")
-      .then((res) => res.json())
-      .then((allUsers) => setUsers(allUsers))
-      .catch((e) => console.error(e.stack));
+      .then( (res) => res.json() )
+      .then( (allUsers) => setUsers(allUsers) )
+      .catch( (e) => console.error(e.stack) );
   };
 
   const addUser = async () => {
@@ -22,17 +22,17 @@ export default function UsersView() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(inputBody),
     })
-      .then((res) => res.json())
-      .then(() => getUsers())
-      .catch((e) => console.error(e.stack));
+      .then( (res) => res.json() )
+      .then( () => getUsers() )
+      .catch( (e) => console.error(e.stack) );
   };
 
   // TODO: implement as a button
   const deleteUser = async (id) => {
-    fetch(`http://localhost:5000/users/${id}`, { method: "DELETE" })
-      .then(() => setUsers(users.filter((user) => user.uid !== id)))
-      .then(() => getUsers())
-      .catch((e) => console.error(e.stack));
+    fetch( `http://localhost:5000/users/${id}`, { method: "DELETE" } )
+      .then( () => setUsers( users.filter( (user) => user.uid !== id ) ) )
+      .then( () => getUsers() )
+      .catch( (e) => console.error(e.stack) );
   };
 
   React.useEffect(() => {
@@ -42,15 +42,15 @@ export default function UsersView() {
   return (
     <>
       <div>
-        {users.map((user) => (
-          <div key={user.uid}>
-            <User user={user} />
+        { users.map( (user) => (
+          <div key={ user.uid }>
+            <User user={ user } />
           </div>
-        ))}
+        ) ) }
       </div>
       <div>
-        <input type="text" onChange={(e) => setNewUser(e.target.value)} />
-        <button onClick={addUser}>Add User</button>
+        <input type="text" onChange={ (e) => setNewUser(e.target.value) } />
+        <button onClick={ addUser }>Add User</button>
       </div>
     </>
   );
